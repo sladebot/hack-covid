@@ -1,11 +1,14 @@
 import boto3
 import logging
 from botocore.exceptions import ClientError
+from app.giphy import GiphyAPI
 
 class SentimentAnalyser:
 	client = None
+	giphy_client = None
 	def __init__(self):
 		try:
+			self.giphy_client = GiphyAPI()
 			self.client = boto3.client('comprehend')
 		except botocore.exceptions.ClientError as e:
 			logging.exception("Not able to authenticate " + str(e))
@@ -51,11 +54,11 @@ class SentimentAnalyser:
 
 				#TODO: Replace get_giphy_url with the Giphy API call
 				if sentiment_result.get("Sentiment") == "NEGATIVE":
-				    sentiment_result["Giphy"] = self.get_giphy_url()
+				    sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
 				elif sentiment_result.get("Sentiment") == "NEUTRAL":
 					sentiment = sentiment_result.get("SentimentScore")
 					if sentiment["Negative"] >= 0.01 and sentiment["Negative"] > sentiment["Positive"]:
-						sentiment_result["Giphy"] = self.get_giphy_url()
+						sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
 
 				if sentiment_result["Giphy"] is not None:
 					result["NEGATIVE"].append(sentiment_result)
@@ -66,6 +69,3 @@ class SentimentAnalyser:
 
 		
 		return result
-
-	def get_giphy_url(self):
-		return "www.somgiphyurl.com"

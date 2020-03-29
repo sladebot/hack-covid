@@ -5,13 +5,14 @@ from app.sentiment_analyser import SentimentAnalyser
 from app.consumer import RssConsumer
 from app.generator import RssGenerator
 from flask import request
-
+from app.giphy import GiphyAPI
 
 def init_app(config_name):
     app = Flask(__name__)
     rss_consumer = RssConsumer()
     feeds_analyser = SentimentAnalyser()
     app.config.from_object(config[config_name])
+    giphy = GiphyAPI()
 
 
     @app.route('/')
@@ -32,6 +33,7 @@ def init_app(config_name):
         rss_str = RssGenerator.generate(filtered_articles)
         res = make_response(rss_str)
         res.headers.set('Content-Type', 'application/rss+xml')
+
         return res
 
     @app.route('/sentiment-analysis')
