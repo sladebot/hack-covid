@@ -1,5 +1,5 @@
 import feedparser
-from app.sentiment_analyser import SentimentAnalyser as sa
+from app.sentiment_analyser import SentimentAnalyser
 
 DEFAULT_FEEDS = ["http://rss.cnn.com/rss/cnn_topstories.rss",
                  "http://www.yahoo.com/news/rss/world",
@@ -8,12 +8,12 @@ DEFAULT_FEEDS = ["http://rss.cnn.com/rss/cnn_topstories.rss",
 
 class RssConsumer:
     __feeds = DEFAULT_FEEDS
-    __feeds_analyser = sa.Analyser()
+    __feeds_analyser = SentimentAnalyser()
 
     def __init__(self, feeds=None):
         if feeds is None:
             feeds = DEFAULT_FEEDS
-        from app.sentiment_analyser self.__feeds = feeds
+            self.__feeds = feeds
 
     def __parse(self, feed_url):
         d = feedparser.parse(feed_url)
@@ -36,6 +36,10 @@ class RssConsumer:
         return collector
 
     def get_sentiment_scores(feed):
+        words = feed.split()
+        separator = ' '
+        if len(words) > 250:
+            feed = separator.join(words[:250])
         analysis = __feeds_analyser.get_sentiment_analysis(feed)
         return analysis
 

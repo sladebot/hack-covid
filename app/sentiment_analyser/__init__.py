@@ -3,18 +3,22 @@ import logging
 from botocore.exceptions import ClientError
 
 class SentimentAnalyser:
-	def __init__():
+	client = None
+	def __init__(self):
 		try:
-			client = boto3.client('comprehend')
+			self.client = boto3.client('comprehend')
 		except botocore.exceptions.ClientError as e:
 			logging.exception("Not able to authenticate " + str(e))
 
-	def get_sentiment_analysis(feed):
+	def get_sentiment_analysis(self, feed):
 		if feed == "":
-			print("Input feed is empty")
+			loggin.error("Input feed is empty")
 			return
 		try:
-			response = client.detect_sentiment(Text=feed, LanguageCode='en')			
+			if self.client is not None:
+				response = self.client.detect_sentiment(Text=feed, LanguageCode='en')
+			else:
+				logging.exception("Client not initialized")
 		except botocore.exceptions.ClientError as e:
 			logging.exception("Not able to process the request : " + str(e))
 

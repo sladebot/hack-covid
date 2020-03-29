@@ -1,15 +1,16 @@
 from flask import Flask
 from flask import make_response, render_template, jsonify, url_for
 from app.config.config import config
-from app.sentiment_analyser import SentimentAnalyser as sa
+from app.sentiment_analyser import SentimentAnalyser
 from app.consumer import RssConsumer
 from app.generator import RssGenerator
+from flask import request
 
 
 def init_app(config_name):
     app = Flask(__name__)
     rss_consumer = RssConsumer()
-    feeds_analyser = sa.Analyser()
+    feeds_analyser = SentimentAnalyser()
     app.config.from_object(config[config_name])
 
 
@@ -35,7 +36,8 @@ def init_app(config_name):
 
     @app.route('/sentiment-analysis')
     def analyse_feed():
-        analysis = feeds_analyser.get_sentiment_analysis('This is a test feed.')
+        feed = request.args.get('feed')
+        analysis = feeds_analyser.get_sentiment_analysis(feed)
         return analysis
 
 
