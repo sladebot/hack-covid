@@ -3,12 +3,13 @@ from flask import make_response, render_template, jsonify, url_for
 from app.config.config import config
 from app.consumer import RssConsumer
 from app.generator import RssGenerator
-
+from app.giphy import GiphyAPI
 
 def init_app(config_name):
     app = Flask(__name__)
     rss_consumer = RssConsumer()
     app.config.from_object(config[config_name])
+    giphy_api = GiphyAPI()
 
     @app.route('/')
     def home_page():
@@ -28,6 +29,9 @@ def init_app(config_name):
         rss_str = RssGenerator.generate(filtered_articles)
         res = make_response(rss_str)
         res.headers.set('Content-Type', 'application/rss+xml')
+
+        print(giphy_api.searchGif("trump"))
+
         return res
 
     @app.errorhandler(500)

@@ -11,3 +11,4 @@ MarkupSafe==1.1.1
 python-dateutil==2.8.1
 six==1.14.0
 Werkzeug==1.0.0
+giphy_client=1.0.0
