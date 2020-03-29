@@ -20,8 +20,12 @@ def init_app(config_name):
     @app.route('/rss')
     def rss():
         articles_from_feeds = rss_consumer.get_feeds()
-        ## Call analysis here and filter and only pass filtered articles 
-        rss_str = RssGenerator.generate(articles_from_feeds[0])
+        ## Call analysis here and filter and only pass filtered articles. For now, add everything
+        filtered_articles = []
+        for feed_articles in articles_from_feeds:
+            filtered_articles += feed_articles
+
+        rss_str = RssGenerator.generate(filtered_articles)
         res = make_response(rss_str)
         res.headers.set('Content-Type', 'application/rss+xml')
         return res

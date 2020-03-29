@@ -1,24 +1,29 @@
 import feedparser
 
+DEFAULT_FEEDS = ["http://rss.cnn.com/rss/cnn_topstories.rss",
+                 "http://www.yahoo.com/news/rss/world",
+                 "http://feeds.bbci.co.uk/news/world/rss.xml",
+                 "http://feeds.reuters.com/Reuters/domesticNews"]
+
 class RssConsumer:
-    __feeds = ["http://rss.cnn.com/rss/cnn_topstories.rss"]
+    __feeds = DEFAULT_FEEDS
 
     def __init__(self, feeds=None):
         if feeds is None:
-            feeds = ["http://rss.cnn.com/rss/cnn_topstories.rss"]
+            feeds = DEFAULT_FEEDS
         self.__feeds = feeds
 
     def __parse(self, feed_url):
         d = feedparser.parse(feed_url)
         articles = []
-
         for entry in d.entries:
             article = {
-                'title': entry['title'],
-                'description': entry['description'],
-                'link': entry['link'],
+                'title': entry.get("title", ""),
+                'description': entry.get("description", ""),
+                'link': entry.get("link", "")
             }
             articles.append(article)
+    
         return articles
 
     def get_feeds(self):
