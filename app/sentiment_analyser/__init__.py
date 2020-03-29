@@ -52,7 +52,7 @@ class SentimentAnalyser:
 					"Giphy" : None
 				}
 
-				#TODO: Replace get_giphy_url with the Giphy API call
+				#TODO: Revist this logic to determine the threshold for negative news
 				if sentiment_result.get("Sentiment") == "NEGATIVE":
 				    sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
 				elif sentiment_result.get("Sentiment") == "NEUTRAL":
