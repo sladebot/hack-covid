@@ -30,8 +30,6 @@ def init_app(config_name):
         res = make_response(rss_str)
         res.headers.set('Content-Type', 'application/rss+xml')
 
-        print(giphy_api.searchGif("trump"))
-
         return res
 
     @app.errorhandler(500)
