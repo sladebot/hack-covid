@@ -1,15 +1,19 @@
 from flask import Flask
 from flask import make_response, render_template, jsonify, url_for
 from app.config.config import config
+from app.sentiment_analyser import SentimentAnalyser
 from app.consumer import RssConsumer
 from app.generator import RssGenerator
+from flask import request
 from app.giphy import GiphyAPI
 
 def init_app(config_name):
     app = Flask(__name__)
     rss_consumer = RssConsumer()
+    feeds_analyser = SentimentAnalyser()
     app.config.from_object(config[config_name])
     giphy = GiphyAPI()
+
 
     @app.route('/')
     def home_page():
@@ -31,6 +35,21 @@ def init_app(config_name):
         res.headers.set('Content-Type', 'application/rss+xml')
 
         return res
+
+    @app.route('/sentiment-analysis')
+    def analyse_feed():
+        feeds =  [{
+            "title" : "Some Title",
+            "description" : "This is some terrible terrible description. I hate this."
+        },
+        {
+            "title" : "Positive title",
+            "description" : "This is a positive news."
+        }]#request.args.get('feed')
+        #analysis = feeds_analyser.get_sentiment_analysis(feed)
+        analysis = feeds_analyser.get_sentiment_scores(feeds)
+        return analysis
+
 
     @app.errorhandler(500)
     def server_error(error=None):
