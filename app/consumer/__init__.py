@@ -1,5 +1,5 @@
 import feedparser
-import sentimentanalyser as sa
+import SentimentAnalyser as sa
 
 DEFAULT_FEEDS = ["http://rss.cnn.com/rss/cnn_topstories.rss",
                  "http://www.yahoo.com/news/rss/world",
