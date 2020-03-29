@@ -1,5 +1,5 @@
 import feedparser
-import SentimentAnalyser as sa
+from app.sentiment_analyser import SentimentAnalyser as sa
 
 DEFAULT_FEEDS = ["http://rss.cnn.com/rss/cnn_topstories.rss",
                  "http://www.yahoo.com/news/rss/world",
@@ -13,7 +13,7 @@ class RssConsumer:
     def __init__(self, feeds=None):
         if feeds is None:
             feeds = DEFAULT_FEEDS
-        self.__feeds = feeds
+        from app.sentiment_analyser self.__feeds = feeds
 
     def __parse(self, feed_url):
         d = feedparser.parse(feed_url)

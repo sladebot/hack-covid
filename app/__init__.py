@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import make_response, render_template, jsonify, url_for
 from app.config.config import config
-import SentimentAnalyser as sa
+from app.sentiment_analyser import SentimentAnalyser as sa
 from app.consumer import RssConsumer
 from app.generator import RssGenerator
 
