@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import make_response, render_template, jsonify, url_for
 from app.config.config import config
-from app.parser import RssConsumer
+from app.consumer import RssConsumer
 from app.generator import RssGenerator
 
 

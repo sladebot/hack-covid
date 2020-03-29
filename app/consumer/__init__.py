@@ -1,12 +1,11 @@
 import feedparser
-from app.config import Config
 
 class RssConsumer:
     __feeds = ["http://rss.cnn.com/rss/cnn_topstories.rss"]
 
     def __init__(self, feeds=None):
         if feeds is None:
-            feeds =
+            feeds = ["http://rss.cnn.com/rss/cnn_topstories.rss"]
         self.__feeds = feeds
 
     def __parse(self, feed_url):
