@@ -9,7 +9,7 @@ def init_app(config_name):
     app = Flask(__name__)
     rss_consumer = RssConsumer()
     app.config.from_object(config[config_name])
-    giphy_api = GiphyAPI()
+    giphy = GiphyAPI()
 
     @app.route('/')
     def home_page():
@@ -20,6 +20,7 @@ def init_app(config_name):
 
     @app.route('/rss')
     def rss():
+        print(giphy.searchHappyGif())
         articles_from_feeds = rss_consumer.get_feeds()
         ## Call analysis here and filter and only pass filtered articles. For now, add everything
         filtered_articles = []
