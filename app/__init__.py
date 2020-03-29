@@ -36,8 +36,16 @@ def init_app(config_name):
 
     @app.route('/sentiment-analysis')
     def analyse_feed():
-        feed = request.args.get('feed')
-        analysis = feeds_analyser.get_sentiment_analysis(feed)
+        feeds =  [{
+            "title" : "Some Title",
+            "description" : "This is some terrible terrible description. I hate this."
+        },
+        {
+            "title" : "Positive title",
+            "description" : "This is a positive news."
+        }]#request.args.get('feed')
+        #analysis = feeds_analyser.get_sentiment_analysis(feed)
+        analysis = feeds_analyser.get_sentiment_scores(feeds)
         return analysis
 
 

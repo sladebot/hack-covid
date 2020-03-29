@@ -35,11 +35,3 @@ class RssConsumer:
             collector.append(__parsed_feed)
         return collector
 
-    def get_sentiment_scores(feed):
-        words = feed.split()
-        separator = ' '
-        if len(words) > 250:
-            feed = separator.join(words[:250])
-        analysis = __feeds_analyser.get_sentiment_analysis(feed)
-        return analysis
-

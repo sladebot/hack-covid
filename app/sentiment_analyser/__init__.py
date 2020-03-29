@@ -23,3 +23,49 @@ class SentimentAnalyser:
 			logging.exception("Not able to process the request : " + str(e))
 
 		return response
+
+	def get_sentiment_scores(self, feeds):
+		result = {
+			"NEGATIVE" : [],
+			"POSITIVE" : [],
+			"NEUTRAL" : []
+		}
+		for article in feeds:
+			title = article.get("title")
+			description = article.get("description")
+			input_feed = title + " " + description
+			words = input_feed.split()
+
+			separator = ' '
+			if len(words) > 250:
+				input_feed = separator.join(words[:250])
+
+			analysis = self.get_sentiment_analysis(input_feed)
+
+			if analysis is not None:
+				sentiment_result = {
+					"Sentiment" : analysis.get("Sentiment"),
+					"Score" : analysis.get("SentimentScore"),
+					"Giphy" : None
+				}
+
+				#TODO: Replace get_giphy_url with the Giphy API call
+				if sentiment_result.get("Sentiment") == "NEGATIVE":
+				    sentiment_result["Giphy"] = self.get_giphy_url()
+				elif sentiment_result.get("Sentiment") == "NEUTRAL":
+					sentiment = sentiment_result.get("SentimentScore")
+					if sentiment["Negative"] >= 0.01 and sentiment["Negative"] > sentiment["Positive"]:
+						sentiment_result["Giphy"] = self.get_giphy_url()
+
+				if sentiment_result["Giphy"] is not None:
+					result["NEGATIVE"].append(sentiment_result)
+				elif sentiment_result["Sentiment"] == "POSITIVE":
+					result["POSITIVE"].append(sentiment_result)
+				else:
+					result["NEUTRAL"].append(sentiment_result)
+
+		
+		return result
+
+	def get_giphy_url(self):
+		return "www.somgiphyurl.com"
