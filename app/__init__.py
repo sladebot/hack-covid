@@ -1,10 +1,13 @@
 from flask import Flask
-from flask import render_template, redirect, jsonify, url_for
+from flask import make_response, render_template, jsonify, url_for
 from app.config.config import config
+from app.parser import RssConsumer
+from app.generator import RssGenerator
 
 
 def init_app(config_name):
     app = Flask(__name__)
+    rss_consumer = RssConsumer()
     app.config.from_object(config[config_name])
 
     @app.route('/')
@@ -14,7 +17,14 @@ def init_app(config_name):
         }
         return jsonify(res)
 
-
+    @app.route('/rss')
+    def rss():
+        articles_from_feeds = rss_consumer.get_feeds()
+        ## Call analysis here and filter and only pass filtered articles 
+        rss_str = RssGenerator.generate(articles_from_feeds[0])
+        res = make_response(rss_str)
+        res.headers.set('Content-Type', 'application/rss+xml')
+        return res
 
     @app.errorhandler(500)
     def server_error(error=None):
