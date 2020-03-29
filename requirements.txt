@@ -2,6 +2,7 @@ click==7.1.1
 feedgen==0.9.0
 feedparser==5.2.1
 Flask==1.1.1
+Flask-Script==2.0.5
 gunicorn==20.0.4
 itsdangerous==1.1.0
 Jinja2==2.11.1
