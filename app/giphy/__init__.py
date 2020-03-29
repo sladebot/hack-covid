@@ -1,3 +1,4 @@
+import os
 import time
 import urllib,json
 import urllib.request as ur
@@ -18,8 +19,11 @@ class GiphyAPI:
 
     def __init__(self, api_key_file='api_key'):
         self.__id_cache = set()
-        with open(api_key_file) as f:
-            self.__api_key = f.read().rstrip('\n')
+        if os.getenv('GIPHY_API_KEY') != None:
+            self.__api_key = os.getenv('GIPHY_API_KEY')
+        else:
+            with open(api_key_file) as f:
+                self.__api_key = f.read().rstrip('\n')
         self.__instance = giphy_client.DefaultApi()
 
     def searchHappyGif(self):
@@ -45,3 +49,6 @@ class GiphyAPI:
 
         # Not likely, can fix later with pagination
         return DEFAULT_GIF
+
+#api = GiphyAPI()
+#print(api.searchHappyGif())
