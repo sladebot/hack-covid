@@ -1,6 +1,6 @@
 import boto3
 import logging
-from botocore.exceptions import ClientError
+import botocore
 from app.giphy import GiphyAPI
 
 class SentimentAnalyser:
@@ -15,7 +15,7 @@ class SentimentAnalyser:
 
 	def get_sentiment_analysis(self, feed):
 		if feed == "":
-			loggin.error("Input feed is empty")
+			logging.error("Input feed is empty")
 			return
 		try:
 			if self.client is not None:
