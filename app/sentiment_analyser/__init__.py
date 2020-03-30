@@ -49,40 +49,39 @@ class SentimentAnalyser:
 			input_hash = hashlib.md5(input_feed.encode('utf-8')).hexdigest()
 			if input_hash not in self.cache:
 				analysis = self.get_sentiment_analysis(input_feed)
-
-				if analysis is not None:
-					sentiment_result = {
-						"Sentiment": analysis.get("Sentiment"),
-						"Score": analysis.get("SentimentScore"),
-						"Giphy": None,
-						"title": title,
-						"description": description,
-						"link": article.get("link")
-					}
-
-					# TODO: Revist this logic to determine the threshold for negative news
-					if sentiment_result.get("Sentiment") == "NEGATIVE":
-						sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
-					elif sentiment_result.get("Sentiment") == "NEUTRAL":
-						sentiment = sentiment_result.get("SentimentScore")
-						if sentiment is not None and (
-								sentiment["Negative"] >= 0.01 and sentiment["Negative"] > sentiment["Positive"]):
-							sentiment_result["Sentiment"] = "NEGATIVE"
-							sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
-
-					if sentiment_result["Giphy"] is not None:
-						result["NEGATIVE"].append(sentiment_result)
-					elif sentiment_result["Sentiment"] == "POSITIVE":
-						result["POSITIVE"].append(sentiment_result)
-					else:
-						result["NEUTRAL"].append(sentiment_result)
-
-				mixed_feeds = self.balance_feeds(result)
-
-				self.cache[input_hash] = mixed_feeds
+				self.cache[input_hash] = analysis
 			else:
-				return self.cache[input_hash]
-		
+				analysis = self.cache[input_hash]
+
+			if analysis is not None:
+				sentiment_result = {
+					"Sentiment": analysis.get("Sentiment"),
+					"Score": analysis.get("SentimentScore"),
+					"Giphy": None,
+					"title": title,
+					"description": description,
+					"link": article.get("link")
+				}
+
+				# TODO: Revist this logic to determine the threshold for negative news
+				if sentiment_result.get("Sentiment") == "NEGATIVE":
+					sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
+				elif sentiment_result.get("Sentiment") == "NEUTRAL":
+					sentiment = sentiment_result.get("SentimentScore")
+					if sentiment is not None and (
+							sentiment["Negative"] >= 0.01 and sentiment["Negative"] > sentiment["Positive"]):
+						sentiment_result["Sentiment"] = "NEGATIVE"
+						sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
+
+				if sentiment_result["Giphy"] is not None:
+					result["NEGATIVE"].append(sentiment_result)
+				elif sentiment_result["Sentiment"] == "POSITIVE":
+					result["POSITIVE"].append(sentiment_result)
+				else:
+					result["NEUTRAL"].append(sentiment_result)
+
+		mixed_feeds = self.balance_feeds(result)
+
 		return mixed_feeds
 
 	def get_giphy_mock(self):
