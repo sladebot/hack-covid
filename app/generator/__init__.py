@@ -11,7 +11,7 @@ class RssGenerator:
         fg.link(href='https://example.com', rel='alternate')
         for a in articles:
             if(a['Giphy']):
-                description = a["description"] + "<br /><p><img src=\"{}\" border=\"0\"></img></p>".format(a['Giphy'])
+                description = a["description"] + "<p><img src=\"{}\" border=\"0\"></img></p>".format(a['Giphy'])
             else:
                 description = a["description"]
             fe = fg.add_entry()
