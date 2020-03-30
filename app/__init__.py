@@ -24,10 +24,13 @@ def init_app(config_name):
 
     @app.route('/rss')
     def rss():
-        articles_from_feeds = rss_consumer.get_feeds()
+        articles_from_feeds_from_sources = rss_consumer.get_feeds()
+        feeds_from_analyser = []
+        for articles in articles_from_feeds_from_sources:
+            feeds_from_analyser.append(feeds_analyser.get_sentiment_scores(articles))
         ## Call analysis here and filter and only pass filtered articles. For now, add everything
         filtered_articles = []
-        for feed_articles in articles_from_feeds:
+        for feed_articles in feeds_from_analyser:
             filtered_articles += feed_articles
 
         rss_str = RssGenerator.generate(filtered_articles)

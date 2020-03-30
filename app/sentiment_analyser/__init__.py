@@ -1,5 +1,6 @@
 import boto3
 import logging
+import botocore
 from botocore.exceptions import ClientError
 from app.giphy import GiphyAPI
 
@@ -15,7 +16,7 @@ class SentimentAnalyser:
 
 	def get_sentiment_analysis(self, feed):
 		if feed == "":
-			loggin.error("Input feed is empty")
+			logging.error("Input feed is empty")
 			return
 		try:
 			if self.client is not None:
@@ -49,7 +50,10 @@ class SentimentAnalyser:
 				sentiment_result = {
 					"Sentiment" : analysis.get("Sentiment"),
 					"Score" : analysis.get("SentimentScore"),
-					"Giphy" : None
+					"Giphy" : None,
+					"title" : title,
+					"description": description,
+					"link" : article.get("link")
 				}
 
 				#TODO: Revist this logic to determine the threshold for negative news
@@ -57,7 +61,8 @@ class SentimentAnalyser:
 				    sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
 				elif sentiment_result.get("Sentiment") == "NEUTRAL":
 					sentiment = sentiment_result.get("SentimentScore")
-					if sentiment["Negative"] >= 0.01 and sentiment["Negative"] > sentiment["Positive"]:
+					if sentiment is not None and (sentiment["Negative"] >= 0.01 and sentiment["Negative"] > sentiment["Positive"]):
+						sentiment_result["Sentiment"] = "NEGATIVE"
 						sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
 
 				if sentiment_result["Giphy"] is not None:
@@ -67,5 +72,49 @@ class SentimentAnalyser:
 				else:
 					result["NEUTRAL"].append(sentiment_result)
 
+		mixed_feeds = self.balance_feeds(result)
+
 		
-		return result
+		return mixed_feeds
+
+	def get_giphy_mock(self):
+		return "www.mockgiphy.com"
+
+	def balance_feeds(self, feeds):
+		negative_feeds = len(feeds["NEGATIVE"])
+		positive_feeds = len(feeds["POSITIVE"])
+		neutral_feeds = len(feeds["NEUTRAL"])
+
+		mixed_feeds = []
+		index1 = 0
+		index2 = 0
+		while index1 < negative_feeds and index2 < positive_feeds:
+			mixed_feeds.append(feeds["NEGATIVE"][index1])
+			index1 = index1 + 1
+			mixed_feeds.append(feeds["POSITIVE"][index2])
+			index2 = index2 + 1
+
+		while index1 < negative_feeds:
+			mixed_feeds.append(feeds["NEGATIVE"][index1])
+			index1 = index1 + 1
+
+		while index2 < positive_feeds:
+			mixed_feeds.append(feeds["POSITIVE"][index2])
+			index2 = index2 + 1
+
+		i=2
+		index = 0
+		while i < len(mixed_feeds) and index < neutral_feeds:
+			mixed_feeds.insert(i, feeds["NEUTRAL"][index])
+			i = i+3
+			index = index + 1
+
+		if index < neutral_feeds:
+			mixed_feeds.append(feeds["NEUTRAL"][index])
+
+		return mixed_feeds
+
+
+
+
+
