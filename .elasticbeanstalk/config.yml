@@ -1,6 +1,6 @@
 branch-defaults:
   master:
-    environment: HackCovid-env
+    environment: null
 environment-defaults:
   HackCovid-env:
     branch: master
