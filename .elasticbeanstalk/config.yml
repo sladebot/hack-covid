@@ -1,8 +1,11 @@
 branch-defaults:
   master:
-    environment: null
+    environment: hack-covid-api
 environment-defaults:
   HackCovid-env:
+    branch: master
+    repository: aws
+  hack-covid-api:
     branch: master
     repository: aws
 global:
