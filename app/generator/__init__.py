@@ -10,10 +10,11 @@ class RssGenerator:
         fg.language("en")
         fg.link(href='https://example.com', rel='alternate')
         for a in articles:
+            label = "<tag>[{}]</tag> ".format(a['Sentiment'])
             if(a['Giphy']):
-                description = a["description"] + "<p><img src=\"{}\" border=\"0\"></img></p>".format(a['Giphy'])
+                description = label +  a["description"] + "<p><img src=\"{}\" border=\"0\"></img></p>".format(a['Giphy'])
             else:
-                description = a["description"]
+                description = label + a["description"]
             fe = fg.add_entry()
             fe.title(a["title"])
             fe.description(description)
