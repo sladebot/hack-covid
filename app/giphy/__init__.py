@@ -12,6 +12,7 @@ HAPPY_KEYWORDS = ["happy", "positive", "happy dance", "excited", "joy", "amazing
 # if some error happens, just return this gif. Gotta love hackathons
 DEFAULT_GIF = "https://media.giphy.com/media/glvyCVWYJ21fq/giphy.gif"
 
+
 class GiphyAPI:
     __api_key = ""
     __instance = None
