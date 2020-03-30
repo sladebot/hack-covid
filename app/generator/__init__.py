@@ -2,6 +2,7 @@ from feedgen.feed import FeedGenerator
 
 
 class RssGenerator:
+
     @staticmethod
     def generate(articles):
         fg = FeedGenerator()
@@ -14,7 +15,8 @@ class RssGenerator:
             fe = fg.add_entry()
             fe.title(a["title"])
             fe.description(a["description"])
-            fe.enclosure(url="https://media.giphy.com/media/glvyCVWYJ21fq/giphy.gif", type="image/gif", length=11407941)
+            fe.enclosure(url=a['image'], type=a['mime_type'])
+            # fe.enclosure(url="https://media.giphy.com/media/glvyCVWYJ21fq/giphy.gif", type="image/gif", length=11407941)
             fe.link(href=a['link'])
 
         return fg.rss_str()
