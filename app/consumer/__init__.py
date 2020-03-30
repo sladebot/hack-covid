@@ -2,9 +2,7 @@ import feedparser
 from app.sentiment_analyser import SentimentAnalyser
 
 DEFAULT_FEEDS = ["http://rss.cnn.com/rss/cnn_topstories.rss",
-                 "http://www.yahoo.com/news/rss/world",
-                 "http://feeds.bbci.co.uk/news/world/rss.xml",
-                 "http://feeds.reuters.com/Reuters/domesticNews"]
+                 "http://feeds.bbci.co.uk/news/world/rss.xml"]
 DEFAULT_GIF = "https://media.giphy.com/media/glvyCVWYJ21fq/giphy.gif"
 
 class RssConsumer:
