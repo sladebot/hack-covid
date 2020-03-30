@@ -14,7 +14,7 @@ class RssGenerator:
             fe = fg.add_entry()
             fe.title(a["title"])
             fe.description(a["description"])
-            fe.enclosure(url="https://media.giphy.com/media/glvyCVWYJ21fq/giphy.gif", type="images/gif")
+            fe.enclosure(url="https://media.giphy.com/media/glvyCVWYJ21fq/giphy.gif", type="images/gif", length=11407941)
             fe.link(href=a['link'])
 
         return fg.rss_str()
