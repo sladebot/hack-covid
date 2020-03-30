@@ -5,13 +5,14 @@ class RssGenerator:
     def generate(articles):
         fg = FeedGenerator()
 
-        fg.title("Demo")
-        fg.description("Demo")
+        fg.title("Sanity")
+        fg.description("An emotionally balanced newsfeed")
         fg.language("en")
-        fg.link(href='https://awesome.com')
+        fg.link(href='', rel='alternate')
         for a in articles:
             fe = fg.add_entry()
             fe.title(a["title"])
             fe.description(a["description"])
+
 
         return fg.rss_str()

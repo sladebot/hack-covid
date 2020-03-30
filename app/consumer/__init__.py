@@ -22,7 +22,8 @@ class RssConsumer:
             article = {
                 'title': entry.get("title", ""),
                 'description': entry.get("description", ""),
-                'link': entry.get("link", "")
+                'link': entry.get("link", ""),
+                'pubData': entry.get("pubData", "")
             }
             articles.append(article)
     
