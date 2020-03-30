@@ -10,6 +10,7 @@ def init_app(config_name):
     app = Flask(__name__)
     rss_consumer = RssConsumer()
     app.config.from_object(config[config_name])
+    feeds_analyser = SentimentAnalyser()
 
 
     @app.route('/')
