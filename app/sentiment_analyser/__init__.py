@@ -3,10 +3,12 @@ import logging
 import botocore
 from botocore.exceptions import ClientError
 from app.giphy import GiphyAPI
+import hashlib
 
 class SentimentAnalyser:
 	client = None
 	giphy_client = None
+	cache = {}
 	def __init__(self):
 		try:
 			self.giphy_client = GiphyAPI()
@@ -44,36 +46,42 @@ class SentimentAnalyser:
 			if len(words) > 250:
 				input_feed = separator.join(words[:250])
 
-			analysis = self.get_sentiment_analysis(input_feed)
+			input_hash = hashlib.md5(input_feed.encode('utf-8')).hexdigest()
+			if input_hash not in self.cache:
+				analysis = self.get_sentiment_analysis(input_feed)
 
-			if analysis is not None:
-				sentiment_result = {
-					"Sentiment" : analysis.get("Sentiment"),
-					"Score" : analysis.get("SentimentScore"),
-					"Giphy" : None,
-					"title" : title,
-					"description": description,
-					"link" : article.get("link")
-				}
+				if analysis is not None:
+					sentiment_result = {
+						"Sentiment": analysis.get("Sentiment"),
+						"Score": analysis.get("SentimentScore"),
+						"Giphy": None,
+						"title": title,
+						"description": description,
+						"link": article.get("link")
+					}
 
-				#TODO: Revist this logic to determine the threshold for negative news
-				if sentiment_result.get("Sentiment") == "NEGATIVE":
-				    sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
-				elif sentiment_result.get("Sentiment") == "NEUTRAL":
-					sentiment = sentiment_result.get("SentimentScore")
-					if sentiment is not None and (sentiment["Negative"] >= 0.01 and sentiment["Negative"] > sentiment["Positive"]):
-						sentiment_result["Sentiment"] = "NEGATIVE"
+					# TODO: Revist this logic to determine the threshold for negative news
+					if sentiment_result.get("Sentiment") == "NEGATIVE":
 						sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
+					elif sentiment_result.get("Sentiment") == "NEUTRAL":
+						sentiment = sentiment_result.get("SentimentScore")
+						if sentiment is not None and (
+								sentiment["Negative"] >= 0.01 and sentiment["Negative"] > sentiment["Positive"]):
+							sentiment_result["Sentiment"] = "NEGATIVE"
+							sentiment_result["Giphy"] = self.giphy_client.searchHappyGif()
 
-				if sentiment_result["Giphy"] is not None:
-					result["NEGATIVE"].append(sentiment_result)
-				elif sentiment_result["Sentiment"] == "POSITIVE":
-					result["POSITIVE"].append(sentiment_result)
-				else:
-					result["NEUTRAL"].append(sentiment_result)
+					if sentiment_result["Giphy"] is not None:
+						result["NEGATIVE"].append(sentiment_result)
+					elif sentiment_result["Sentiment"] == "POSITIVE":
+						result["POSITIVE"].append(sentiment_result)
+					else:
+						result["NEUTRAL"].append(sentiment_result)
 
-		mixed_feeds = self.balance_feeds(result)
+				mixed_feeds = self.balance_feeds(result)
 
+				self.cache[input_hash] = mixed_feeds
+			else:
+				return self.cache[input_hash]
 		
 		return mixed_feeds
 
