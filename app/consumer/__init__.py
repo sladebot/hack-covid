@@ -26,15 +26,9 @@ class RssConsumer:
                 'link': entry.get("link", ""),
                 'pubData': entry.get("pubData", "")
             }
-            image_url = entry.get("media_content", DEFAULT_GIF)
-            if image_url is DEFAULT_GIF:
-                article['image'] = DEFAULT_GIF
-                article['mime_type'] = 'image/gif'
-            elif(len(image_url) > 0):
+            image_url = entry.get("media_content", None)
+            if (image_url is not None) and len(image_url) > 0:
                 article['image'] = image_url[0]['url']
-                article['mime_type'] = "image/jpeg"
-            else:
-                article['image'] = DEFAULT_GIF
                 article['mime_type'] = 'image/gif'
             articles.append(article)
     
